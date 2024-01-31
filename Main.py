@@ -14,6 +14,15 @@ import datetime as dt
 from st_aggrid import AgGrid
 import streamlit as st
 import matplotlib.pyplot as plt
+try:
+    # from ANPR_Database import *  # Import from Database.py 
+    from ANPR_File import *  # Import from Detect.py
+    from ANPR_Setup import *  # Import from Train.py
+    from ANPR_Folder import *  # Import from ANPR_Folder.py
+    from ANPR_Db import *  # Import from ANPR_Db.py
+    
+except ModuleNotFoundError:
+    st.warning("Error: Module not found. Check file names and paths.")
 
 # Function to count image files in a folder
 def count_image_files(folder):
@@ -45,16 +54,6 @@ st.set_page_config(
         'About': "Deteksi Plat Nomor Menggunakan Yolo & Tesseract OCR"
     }
 )
-
-try:
-    # from ANPR_Database import *  # Import from Database.py 
-    from ANPR_File import *  # Import from Detect.py
-    from ANPR_Setup import *  # Import from Train.py
-    from ANPR_Folder import *  # Import from ANPR_Folder.py
-    from ANPR_Db import *  # Import from ANPR_Db.py
-    
-except ModuleNotFoundError:
-    st.warning("Error: Module not found. Check file names and paths.")
 
 st.header('Deteksi Plat Nomor Menggunakan Yolo & Tesseract OCR')      
 st.subheader('By Rahmat Kurniawan', divider='rainbow')  
