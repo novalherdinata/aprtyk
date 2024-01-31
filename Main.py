@@ -52,7 +52,7 @@ st.set_page_config(
     }
 )
 
-st.markdown(
+st.markdown( 
     """
     <style>
     .st-emotion-cache-18ni7ap {
