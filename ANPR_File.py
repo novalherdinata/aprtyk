@@ -161,7 +161,7 @@ class ANPR:
         st.write("kotak berwarna hijau merupakan bounding box (BBox) merupakan prediksi terbaik dari model yang telah dilatih YoloV8 dan memiliki confidence tertinggi. BBox tersebut selanjutnya akan dimasking & crop untuk proses OCR menggunakan Tesseract OCR.")
         col1, col2 = st.columns(2)
         with col1:
-            st.text_input("Hasil Prediksi Class", class_label)
+            st.text_input("Hasil Prediksi Class", "Plat Nomor")
         with col2:
             st.text_input("Hasil Prediksi Confidence", confidence)
 
