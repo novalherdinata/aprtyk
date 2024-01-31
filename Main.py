@@ -20,6 +20,7 @@ from ANPR_Setup import *  # Import from Train.py
 from ANPR_Folder import *  # Import from ANPR_Folder.py
 from ANPR_Db import *  # Import from ANPR_Db.py
 
+
 # Function to count image files in a folder
 def count_image_files(folder):
     file_count = 0
@@ -54,7 +55,7 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .st-emotion-cache-18ni7ap ezrtsby2 {
+    .st-emotion-cache-18ni7ap {
         display: none;
     }
     </style>
