@@ -5,12 +5,19 @@ import psycopg2
 @st.cache_resource()
 class connect_db():
     def __init__(self):
+        # self.connection = psycopg2.connect(
+        #     host="209.182.237.44",
+        #     user="postgres",
+        #     password="SamsungDev12@",
+        #     database="rahmatANPR",
+        #     port="5433"
+        # )
         self.connection = psycopg2.connect(
-            host="209.182.237.44",
-            user="postgres",
-            password="SamsungDev12@",
-            database="rahmatANPR",
-            port="5433"
+            host= st.secrets["DB_HOST"],
+            user= st.secrets["DB_USERNAME"],
+            password= st.secrets["DB_PASSWORD"],
+            database= st.secrets["DB_DATABASE"],
+            port= st.secrets["DB_PORT"]
         )
         self.cursor = self.connection.cursor()
 
@@ -29,6 +36,24 @@ class connect_db():
     
     def read_compare_data(self, filename):
         sql = "SELECT result FROM results_data WHERE id_data = %s"
+        self.cursor.execute(sql, (filename,))
+        record = self.cursor.fetchone()
+        return record
+    
+    def read_check_id(self, filename):
+        sql = "SELECT id FROM results_data WHERE id_data = %s"
+        self.cursor.execute(sql, (filename,))
+        record = self.cursor.fetchone()
+        return record
+    
+    def read_compare_data_yolo(self, filename):
+        sql = "SELECT resultyolo FROM results_data WHERE id_data = %s"
+        self.cursor.execute(sql, (filename,))
+        record = self.cursor.fetchone()
+        return record
+    
+    def read_yolo_state(self, filename):
+        sql = "SELECT statust FROM results_data WHERE id_data = %s"
         self.cursor.execute(sql, (filename,))
         record = self.cursor.fetchone()
         return record

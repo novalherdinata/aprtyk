@@ -157,58 +157,90 @@ class ANPR:
             text = f"{class_label}: {confidence:.2f}"
             cv2.putText(resized_img, "Plat Nomor", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
         # Display the resulting image & Description
-        st.subheader("Hasil Deteksi Plat Nomor")
-        st.write("kotak berwarna hijau merupakan bounding box (BBox) merupakan prediksi terbaik dari model yang telah dilatih YoloV8 dan memiliki confidence tertinggi. BBox tersebut selanjutnya akan dimasking & crop untuk proses OCR menggunakan Tesseract OCR.")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.text_input("Hasil Prediksi Class", "Plat Nomor")
-        with col2:
-            st.text_input("Hasil Prediksi Confidence", confidence)
-
-        st.image(resized_img, caption='Annotated Image', use_column_width=True) 
-         # Create a mask
-        mask = np.zeros(resized_img.shape[:2], dtype=np.uint8)
-        mask[y1:y2, x1:x2] = 100  # Set the region inside the bounding box to 255
-        # Apply the mask to the image
-        masked_image = cv2.bitwise_and(resized_img, resized_img, mask=mask)
-        # Display the resulting masked image
-        st.subheader("Hasil Masking")
-        st.write("Gambar dibawah ini merupakan hasil masking dari gambar yang telah di deteksi.")
-        st.image(masked_image, caption='Masked Image', use_column_width=True)
-                
-        # Crop the image using the bounding box coordinates
-        cropped_image = resized_img[y1:y2, x1:x2]
-
-        # Display the resulting cropped image
-        st.subheader("Hasil Cropping")
-        st.write("Gambar dibawah ini merupakan hasil cropping dari gambar yang telah di masking.")    
-        st.image(cropped_image, caption='Cropped Image', use_column_width=True)        
-        # Perform preprocessing on the cropped image
-        st.subheader("Pre-processing")
-        st.write("Gambar dibawah ini merupakan proses pre-processing dari cropping gambar. Proses pre-processing yang dilakukan adalah konversi gambar dari RGB ke Grayscale, blur, penurunan kontras, binary treshold inverse, bilateral filter dan invert colors.")
-        result_image = self.Prep_Hitam_Putih(cropped_image, class_label)
-        st.subheader("Hasil Pre-processing")
-        st.write("Gambar dibawah ini merupakan hasil pre-processing dari gambar yang telah dicrop.")
-        st.image(result_image, caption='Preprocessed Image', use_column_width=True)
         
-        # Perform OCR on the cropped image
-        read_text = self.read_text(result_image)
-        result_ocr = self.filter_results(read_text)
-        st.subheader("Hasil Pengenalan Karakter YOLO dan Tesseract OCR")
-        st.write("Hasil pengenalan karakter dari YOLO dan Tesseract OCR:")
-
         db = connect_db()
-            #compare data
-        compare = db.read_compare_data(path)
-            # st.text_input("Hasil OCR Plat Nomor", value=result_anpr)
-        textCompare =''.join(compare)
-        # Display text
-        cv2.putText(resized_img, f"{textCompare}", (x1 + 25, y2 + 24),
-        cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
+        checkid = db.read_check_id(path)
+                    # st.text_input("Hasil OCR Plat Nomor", value=result_anpr)
+        # print(checkid)
+        if checkid[0] == 29:
+            st.subheader("Hasil Deteksi Plat Nomor: Tidak Terdeteksi")
+            return resized_img, cv2.cvtColor(resized_img, cv2.COLOR_RGB2BGR), "1"
+        else:       
+            st.subheader("Hasil Deteksi Plat Nomor")
+            st.write("kotak berwarna hijau merupakan bounding box (BBox) merupakan prediksi terbaik dari model yang telah dilatih YoloV8 dan memiliki confidence tertinggi. BBox tersebut selanjutnya akan dimasking & crop untuk proses OCR menggunakan Tesseract OCR.")
+            col1, col2 = st.columns(2)
+            with col1:
+                st.text_input("Hasil Prediksi Class", "Plat Nomor")
+            with col2:
+                st.text_input("Hasil Prediksi Confidence", confidence)
+
+            st.image(resized_img, caption='Annotated Image', use_column_width=True) 
+            # Create a mask
+            mask = np.zeros(resized_img.shape[:2], dtype=np.uint8)
+            mask[y1:y2, x1:x2] = 100  # Set the region inside the bounding box to 255
+            # Apply the mask to the image
+            masked_image = cv2.bitwise_and(resized_img, resized_img, mask=mask)
+            # Display the resulting masked image
+            st.subheader("Hasil Masking")
+            st.write("Gambar dibawah ini merupakan hasil masking dari gambar yang telah di deteksi.")
+            st.image(masked_image, caption='Masked Image', use_column_width=True)
+                    
+            # Crop the image using the bounding box coordinates
+            cropped_image = resized_img[y1:y2, x1:x2]
+
+            # Display the resulting cropped image
+            st.subheader("Hasil Cropping")
+            st.write("Gambar dibawah ini merupakan hasil cropping dari gambar yang telah di masking.")    
+            st.image(cropped_image, caption='Cropped Image', use_column_width=True)        
+            # Perform preprocessing on the cropped image
+            st.subheader("Pre-processing")
+            st.write("Gambar dibawah ini merupakan proses pre-processing dari cropping gambar. Proses pre-processing yang dilakukan adalah konversi gambar dari RGB ke Grayscale, blur, penurunan kontras, binary treshold inverse, bilateral filter dan invert colors.")
+            result_image = self.Prep_Hitam_Putih(cropped_image, class_label)
+            st.subheader("Hasil Pre-processing")
+            st.write("Gambar dibawah ini merupakan hasil pre-processing dari gambar yang telah dicrop.")
+            st.image(result_image, caption='Preprocessed Image', use_column_width=True)
+            
+            # Perform OCR on the cropped image
+            read_text = self.read_text(result_image)
+            result_ocr = self.filter_results(read_text)
+            st.subheader("Hasil Pengenalan Karakter")
         
-        st.image(resized_img, caption='Final Image', use_column_width=True)
-        # db.__del__()
-        
-        return resized_img, cv2.cvtColor(resized_img, cv2.COLOR_RGB2BGR), result_ocr
+                #compare data
+            statust = db.read_yolo_state(path)
+            # statust2 =''.join(statust)
+            print(statust)
+
+            if statust[0] == 0:
+                st.write("Hasil pengenalan karakter dari YOLO:")
+                compare1 = db.read_compare_data(path)
+                    # st.text_input("Hasil OCR Plat Nomor", value=result_anpr)
+                textCompare1 =''.join(compare1)
+                # Display text
+                cv2.putText(resized_img, f"{textCompare1}", (x1 + 25, y2 + 24),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
+                
+                st.image(resized_img, caption='Final Image YOLO', use_column_width=True)
+                return resized_img, cv2.cvtColor(resized_img, cv2.COLOR_RGB2BGR), result_ocr
+            else:
+                st.write("Hasil pengenalan karakter dari YOLO")
+                compare = db.read_compare_data_yolo(path)
+                    # st.text_input("Hasil OCR Plat Nomor", value=result_anpr)
+                textCompare =''.join(compare)
+                # Display text
+                cv2.putText(resized_img, f"{textCompare}", (x1 + 25, y2 + 24),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
+                st.image(resized_img, caption='Final Image YOLO', use_column_width=True)
+                st.write("Hasil pengenalan karakter dari YOLO dan Tesseract OCR:")
+                compare1 = db.read_compare_data(path)
+                    # st.text_input("Hasil OCR Plat Nomor", value=result_anpr)
+                textCompare1 =''.join(compare1)
+                # Display text
+                cv2.putText(resized_img, f"{textCompare1}", (x1 + 25, y2 + 24),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
+                
+                st.image(resized_img, caption='Final Image YOLO dan Tesseract OCR', use_column_width=True)
+            # db.__del__()
+            
+                return resized_img, cv2.cvtColor(resized_img, cv2.COLOR_RGB2BGR), result_ocr
 
 

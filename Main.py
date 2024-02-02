@@ -259,15 +259,20 @@ if selected =='Predict':
             #compare data
             compare = db.read_compare_data(selected_image_for_predict)
             textCompare =''.join(compare)
-            st.text_input("Hasil OCR Plat Nomor", value=textCompare)
+           
 
             db = connect_db()
             #compare data
             status = db.read_compare_result(selected_image_for_predict)
 
             if status[0] == 0: 
+                st.text_input("Hasil OCR Plat Nomor", value=textCompare)
                 st.error("Hasil Tidak Akurat - Expected Result "+ status[1])
+
+            elif status[0] == 2: 
+                 st.error("Hasil Tidak Akurat")
             else:
+                st.text_input("Hasil OCR Plat Nomor", value=textCompare)
                 st.success("Hasil Akurat")
 
 if selected == "Analytics":
