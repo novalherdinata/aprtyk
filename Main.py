@@ -104,7 +104,7 @@ if selected == "Upload Image":
     
 if selected == "Image Database":
     #title center
-    st.markdown("<h1 style='text-align: center; color: White;'>ANPR Yolo5 & EasyOCR</h1>", unsafe_allow_html=True)
+    # st.markdown("<h1 style='text-align: center; color: White;'>ANPR Yolo5 & EasyOCR</h1>", unsafe_allow_html=True)
     st.title('Image Database')
     # st.write("Perform CRUD operations on the database.")
 
