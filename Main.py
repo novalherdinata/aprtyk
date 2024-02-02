@@ -57,6 +57,9 @@ st.markdown(
     <style>
     .st-emotion-cache-18ni7ap {
         display: none;
+    },
+    .viewerBadge_container__r5tak{
+     display: none;
     }
     </style>
     """,
