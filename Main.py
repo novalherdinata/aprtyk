@@ -125,7 +125,9 @@ if selected == "Image Database":
     # Add total count
     df.loc[len(df.index)] = ['Total', total_count]
     
-    st.table(df)
+    # st.table(df)
+    st.write("Data Pengujian: 120 Gambar")
+
     st.subheader("List Image Sample")
 
     # Show a selectbox to choose the folder
