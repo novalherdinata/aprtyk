@@ -120,7 +120,9 @@ class ANPR:
             raise ValueError("Model not loaded. Please provide a model path.")
 
         img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        img2 = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         resized_img = cv2.resize(img, (720, 720))
+        resized_img2 = cv2.resize(img2, (720, 720))
 
         with torch.no_grad():
             results = self.model(resized_img)
@@ -154,8 +156,11 @@ class ANPR:
         if best_prediction:
             # Draw bounding box on the image
             cv2.rectangle(resized_img, (x1, y1), (x2, y2), color, 2)
+            cv2.rectangle(resized_img2, (x1, y1), (x2, y2), color, 2)
             text = f"{class_label}: {confidence:.2f}"
             cv2.putText(resized_img, "Plat Nomor", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            cv2.putText(resized_img2, "Plat Nomor", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+
         # Display the resulting image & Description
         
         db = connect_db()
@@ -235,12 +240,12 @@ class ANPR:
                     # st.text_input("Hasil OCR Plat Nomor", value=result_anpr)
                 textCompare1 =''.join(compare1)
                 # Display text
-                cv2.putText(resized_img, f"{textCompare1}", (x1 + 25, y2 + 24),
+                cv2.putText(resized_img2, f"{textCompare1}", (x1 + 25, y2 + 24),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
                 
-                st.image(resized_img, caption='Final Image YOLO dan Tesseract OCR', use_column_width=True)
+                st.image(resized_img2, caption='Final Image YOLO dan Tesseract OCR', use_column_width=True)
             # db.__del__()
             
-                return resized_img, cv2.cvtColor(resized_img, cv2.COLOR_RGB2BGR), result_ocr
+                return resized_img2, cv2.cvtColor(resized_img2, cv2.COLOR_RGB2BGR), result_ocr
 
 
